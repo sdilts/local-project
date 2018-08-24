@@ -39,14 +39,18 @@
       (ensure-directories-exist dir))))
 
 (defun build-help-text (forms)
-  (with-output-to-string (stream)
-    ;; get some stuff out of the way:
-    (format stream "~&Available choices:~%")
-    (dolist (option forms)
-      (let ((input-char (first option))
-	    (help-text (second option)))
-	(format stream "~&~3T~A - ~A~%" input-char help-text)))
-    (format stream "~&")))
+  `(progn
+     (format t "~&Available options:~%")
+     ,@(loop for option in forms
+	  collect
+	    (let ((input-char (first option))
+		  (help-form (second option)))
+       	      `(progn
+       		 (format t "~&~3T~A - " ,input-char)
+		 ,(if (listp help-form)
+       		     `(format t ,(car help-form) ,@(cdr help-form))
+       		     `(format t ,help-form)))))
+     (format t "~&")))
 
 (defun build-prompt-text (forms &key (options-shown 2) (default (caar forms)))
   (with-output-to-string (stream)
@@ -58,35 +62,34 @@
       (format stream "/..."))
     (format stream "/ ? Shows all options] (~A): " default)))
 
-
-;; future versions of this macro could add an option to display the help text first,
-;; and use a hashtable for larger menus
+;; future versions of this macro could use a hashtable for larger menus
 (defmacro run-menu ((&key (default-choice t) (options-shown 2) (repeat-prompt nil)
 			  (always-show-help nil))
 		       prompt &body options)
   "(run-menu (menu-options) prompt options), where options is of form (choice-string option-info &body forms).
 The menu wil only exit when (return-from run-menu) is called"
-  (let ((help-text (build-help-text options))
+  (declare (ignore default-choice))
+  (let ((print-help (build-help-text-function options))
 	(prompt-text (build-prompt-text options :options-shown options-shown)))
-    `(block run-menu
-       ,(if (listp prompt)
-	    `(format t ,(car prompt) ,@(cdr prompt))
-	    `(format t ,prompt))
-       (loop
-	  ;; use a progn so we can have nil in the code:
-	  (progn
-	    ,(when always-show-help
-	       `(format t ,help-text))
-	    ,(when repeat-prompt
-	       (if (listp prompt)
-		   `(format t ,(car prompt) ,@(cdr prompt))
-		   `(format t ,prompt))))
-	  (cl-ansi-text:with-color (:white :effect :bright)
-	    (format t ,prompt-text))
-	  (finish-output)
-	  (with-gensyms (answer)
-	    (setf answer (read-line))
-	    (switch (answer :test #'string-equal)
+    (with-gensyms (answer)
+      `(block run-menu
+	 ,(if (listp prompt)
+	      `(format t ,(car prompt) ,@(cdr prompt))
+	      `(format t ,prompt))
+	 (loop
+	    ;; use a progn so we can have nil in the code:
+	    (progn
+	      ,(when always-show-help
+		 print-help)
+	      ,(when repeat-prompt
+		 (if (listp prompt)
+		     `(format t ,(car prompt) ,@(cdr prompt))
+		     `(format t ,prompt))))
+	    (cl-ansi-text:with-color (:white :effect :bright)
+	      (format t ,prompt-text))
+	    (finish-output)
+	    (setf ,answer (read-line))
+	    (switch (,answer :test #'string-equal)
 	      ,@(append
 		 ;; build user-supplied options
 		 (loop for opt in options collect
@@ -94,9 +97,9 @@ The menu wil only exit when (return-from run-menu) is called"
 			(push (first opt) values)
 			(append values (cddr opt))))
 		 ;; build the help text entry:
-		 `(("?" (format t ,help-text)))
+		 `(("?" ,print-help))
 		 ;; default option
 		 `(("" ,@(cddr (first options))))
 		 ;; invalid option
-		 `((t (format t (cl-ansi-text:red "~&Invalid answer ~S.") answer))))))
-	  (clear-input)))))
+		 `((t (format t (cl-ansi-text:red "~&Invalid answer ~S.") ,answer)))))
+	    (clear-input))))))
