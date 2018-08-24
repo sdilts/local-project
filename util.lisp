@@ -63,19 +63,20 @@
     (format stream "/ ? Shows all options] (~A): " default)))
 
 ;; future versions of this macro could use a hashtable for larger menus
-(defmacro run-menu ((&key (default-choice t) (options-shown 2) (repeat-prompt nil)
+(defmacro run-menu ((&key (default-choice t) (num-options-shown 2) (repeat-prompt nil)
 			  (always-show-help nil))
 		       prompt &body options)
   "(run-menu (menu-options) prompt options), where options is of form (choice-string option-info &body forms).
 The menu wil only exit when (return-from run-menu) is called"
   (declare (ignore default-choice))
-  (let ((print-help (build-help-text-function options))
-	(prompt-text (build-prompt-text options :options-shown options-shown)))
+  (let ((print-help (build-help-text options))
+	(prompt-text (build-prompt-text options :options-shown num-options-shown)))
     (with-gensyms (answer)
       `(block run-menu
-	 ,(if (listp prompt)
-	      `(format t ,(car prompt) ,@(cdr prompt))
-	      `(format t ,prompt))
+	 ,(when (not repeat-prompt)
+	    (if (listp prompt)
+		`(format t ,(car prompt) ,@(cdr prompt))
+		`(format t ,prompt)))
 	 (loop
 	    ;; use a progn so we can have nil in the code:
 	    (progn
@@ -88,18 +89,18 @@ The menu wil only exit when (return-from run-menu) is called"
 	    (cl-ansi-text:with-color (:white :effect :bright)
 	      (format t ,prompt-text))
 	    (finish-output)
-	    (setf ,answer (read-line))
-	    (switch (,answer :test #'string-equal)
-	      ,@(append
-		 ;; build user-supplied options
-		 (loop for opt in options collect
-		      (let ((values ()))
-			(push (first opt) values)
-			(append values (cddr opt))))
-		 ;; build the help text entry:
-		 `(("?" ,print-help))
-		 ;; default option
-		 `(("" ,@(cddr (first options))))
-		 ;; invalid option
-		 `((t (format t (cl-ansi-text:red "~&Invalid answer ~S.") ,answer)))))
-	    (clear-input))))))
+	    (let ((,answer (read-line)))
+	      (switch (,answer :test #'string-equal)
+		,@(append
+		   ;; build user-supplied options
+		   (loop for opt in options collect
+			(let ((values ()))
+			  (push (first opt) values)
+			  (append values (cddr opt))))
+		   ;; build the help text entry:
+		   `(("?" ,print-help))
+		   ;; default option
+		   `(("" ,@(cddr (first options))))
+		   ;; invalid option
+		   `((t (format t (cl-ansi-text:red "~&Invalid answer ~S.") ,answer)))))
+	      (clear-input)))))))
