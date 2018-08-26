@@ -1,0 +1,82 @@
+#!/bin/sh
+#|-*- mode:lisp -*-|#
+#|
+exec ros -Q -- $0 "$@"
+|#
+
+(asdf:initialize-source-registry
+ '(:source-registry
+   ;; TODO: change this directory:
+   (:directory #p"~/Programs/git-install/")
+   :inherit-configuration))
+(setf asdf:*central-registry*
+      (append (list (merge-pathnames #p"~/Programs/git-install/"))
+	      asdf:*central-registry*))
+(ql:quickload "gdep" :silent t)
+
+(defpackage :gdep/ros
+  (:use :cl :gdep/all :iterate))
+
+(in-package :gdep/ros)
+
+(defvar *first-arg-dispatch* nil)
+
+(defun print-help (&rest args)
+  (declare (ignore args))
+  "Print this help text."
+  (format t "Welcome to gdep version 0.0.1!~%")
+  (format t "A utiltiy for managing programs locally installed from source.~%")
+  (format t "~%Usage: gdep [options] commmand [arguments...]~%~%")
+  (format t "Available commands:~%")
+  (iter (for (string function) in-hashtable *first-arg-dispatch*)
+	(format t "~&~4T~A~A~A~21T~A~%"
+		(cl-ansi-text:make-color-string :white :effect :bright)
+		string cl-ansi-text:+reset-color-string+
+		(documentation function 'function)))
+  (format t "~%")
+  (finish-output))
+
+(setf *first-arg-dispatch*
+      (make-hash:make-hash :initial-contents
+			   (list "help"    #'print-help
+				 "init"    #'gdep/init-project:init-project
+				 ;; "remove"    #'remove-dep
+				 ;; "install"   #'install-project
+				  ;; "uninstall" #'uninstall-project)
+				  )
+			   :test 'equal))
+
+;; as of August 2018, the terminfo lisp package doesn't support 32 bit terminfo files,
+;; so we must try to use the old versions:
+;; TODO: update for new a future version of terminfo
+(defun fix-term-name (name)
+  (cl-ppcre:register-groups-bind (fixed) ("([a-z]*)-*" name)
+    (or fixed name)))
+
+(defun term-colorable-p ()
+  (and (interactive-stream-p *standard-input*)
+       (member :max-colors (terminfo:capabilities
+			    (terminfo:set-terminal (fix-term-name (uiop:getenv "TERM")))))))
+
+(defun main (&rest argv)
+  ;; do some setup with colors:
+  (if (term-colorable-p)
+      (setf cl-ansi-text:*enabled* t)
+      (setf cl-ansi-text:*enabled* nil))
+  ;; check system install status:
+  (gdep/data-init:data-dir-init)
+  ;; figure out what the user wants:
+  (let* ((first (car argv))
+	 (func (gethash first *first-arg-dispatch*)))
+    (cond
+      ((functionp func)
+       (funcall func *default-pathname-defaults* (cdr argv)))
+      (t
+       (format t (cl-ansi-text:red (format nil "~&Unknown command: ~S~%"
+	       (if (symbolp first)
+    		   ""
+    		   first))))
+       (print-help)
+       ;; return "invalid argument"
+       (uiop:quit 22)))))
+;;; vim: set ft=lisp lisp:
