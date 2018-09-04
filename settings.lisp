@@ -9,8 +9,11 @@
 	  *data-directory*
 	  change-data-directory))
 
-(defvar *data-directory* (uiop:ensure-directory-pathname (merge-pathnames (user-homedir-pathname)
-									  #p".gdep")))
+;; TODO: change this directory:
+(defvar *data-directory* (uiop:ensure-directory-pathname #p"/home/stuart/Programs/git-install/data"))
+
+;; TODO: change this:
+(defvar *pkg-database* "rpm")
 
 (defun change-data-directory (new-path)
   (assert (pathnamep new-path))

@@ -13,5 +13,6 @@
   :defsystem-depends-on (:asdf-package-system)
   :depends-on (#:inferior-shell #:cl-store #:uiop #:unix-options
 				#:cl-ansi-text #:lambdalite #:terminfo
-				#:iterate #:cl-ppcre
+				#:make-hash
+				#:iterate #:cl-ppcre  ; #:closer-mop
 				#:alexandria #:gdep/all))

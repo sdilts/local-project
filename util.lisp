@@ -1,3 +1,5 @@
+;; a file for functions that are shared across files
+
 (defpackage #:gdep/util
   (:use :cl :alexandria))
 
@@ -20,6 +22,13 @@
   (:report (lambda (condition stream)
 	     (format stream "Operation ~S aborted" (operation condition)))))
 
+(define-condition directory-creation-error (error)
+  ((location :initarg :location :reader location))
+  (:default-initargs
+   :location (error "You must supply a location"))
+  (:report (lambda (condition stream)
+	     (format stream "Directory \"~S\" could not be created" (location condition)))))
+
 (defun create-dir (dir &key (error-already-exists nil))
   (assert (uiop:directory-pathname-p dir))
   (restart-case
@@ -28,15 +37,20 @@
 	 ;; try to create the directories:
 	 (ensure-directories-exist dir)
 	 ;; check if they were actually created:
-	 (uiop:directory-exists-p dir))
-	(already-exists-p (cerror (format nil "Use already existing \"~A\"" dir)
+	 (unless (uiop:directory-exists-p dir)
+	   (error 'directory-creation-error :location dir))
+	 t)
+	(error-already-exists (cerror (format nil "Directory \"~A\" already exists." dir)
 				  'directory-already-exists-error :location dir)
 			  t))
     (clear-directory ()
       :report (lambda (stream)
 		(format stream "Erase everything in \"~A\"" dir))
       (uiop:delete-directory-tree dir)
-      (ensure-directories-exist dir))))
+      (ensure-directories-exist dir)
+      (unless (uiop:directory-exists-p dir)
+	(error 'directory-creation-error :location dir))
+      t)))
 
 (defun build-help-text (forms)
   `(progn

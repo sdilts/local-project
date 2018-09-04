@@ -13,17 +13,8 @@
 	  update-available-p
 	  dependency-update))
 
-
-(defclass dependency ()
-  ((name :initarg :name :reader dependency-name
-	 :type 'string)
-   (last-updated :initarg :last-updated
-		 :accessor last-updated)))
-
 (defclass system-package (dependency)
   ((version :initarg :version :accessor system-package-version)))
-
-
 
 (defgeneric was-updated-p (dependency)
   (:documentation "Checks if the dependency was updated since the last time the database
@@ -40,4 +31,7 @@ the database was updated"))
   (:documentation "Checks if the the dependency's source code can be updated"))
 
 (defgeneric dependency-update (dependency)
-  (:documentation "Updates the dependency."))
+  (:documentation "Updates the dependency and installs it"))
+
+(defgeneric get-dependencies (dependency)
+  (:documentation "Returns the dependencies of the project as a list of ids"))

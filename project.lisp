@@ -10,28 +10,34 @@
 (export '(project
 	  build-type
 	  remote-type
+	  compilation-location
 	  project-location
-	  project-dependencies))
+	  project-dependencies
+	  project-url
+	  version-control-type))
 
 (defclass project (dependency)
   ((location :initarg :location
 	     :accessor project-location
 	     :type 'pathname)
-   (version :initarg :version
-	    :accessor project-version
-	    :type 'number)
    (version-control-type :initarg :version-control-type
 			 :accessor version-control-type)
    (build-type :initarg :build-type
-		      :reader :build-type
-		      :type 'build-instruction)
+		      :reader build-type
+		      :type 'build-type)
    (compilation-location :initarg :compilation-type
 			 :accessor compilation-location)
+   (url :initarg :url
+	:accessor project-url
+	:type #'stringp)
    (dependencies :initarg :dependencies
 		 :accessor project-dependencies))
   (:default-initargs
-   :version-control-type :git))
+   :version-control-type :git
+    :url ""
+    :version 0))
 
+;; (defmethod print-object
 
 #|
 Project updating order:

@@ -5,8 +5,9 @@
 		:*data-directory*
 		:change-data-directory)
   (:import-from #:lambdalite
-		:load-db))
-
+		:load-db)
+  (:import-from #:gdep/build-types
+		:scan-build-types))
 
 (in-package #:gdep/data-init)
 
@@ -37,10 +38,18 @@
 
 (defun data-dir-init ()
   ;; make sure the directory is present:
-  (tagbody ensure-data-directory
-    (handler-case (ensure-data-directory-exists)
-      (data-dir-changed (c)
-	(change-data-directory (new-directory c))
-	(go ensure-data-directory))))
-  (load-db :path (uiop:ensure-directory-pathname (merge-pathnames *data-directory*
-								  #p"db"))))
+  (let ((first-run (not (uiop:directory-exists-p *data-directory*)))
+	(db-created nil))
+    (when first-run
+      (create-dir *data-directory*))
+    (handler-bind ((simple-warning
+		    (lambda (c)
+		      (format *debug-io* "~&Database not initialized~%")
+		      (setf db-created t)
+		      (muffle-warning c))))
+      (load-db :path (uiop:ensure-directory-pathname (merge-pathnames #p"db"
+								      *data-directory*))))
+    (when db-created
+      (format *debug-io* "~&Initializing database...~%")
+      (scan-build-types *data-directory*)
+      (format *debug-io* "~&Database initialized~%~%"))))
