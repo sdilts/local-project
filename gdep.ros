@@ -15,36 +15,30 @@ exec ros -Q -- $0 "$@"
 (ql:quickload "gdep" :silent t)
 
 (defpackage :gdep/ros
-  (:use :cl :gdep/all :iterate))
+  (:use :cl :gdep/all :iterate :gdep/command))
 
 (in-package :gdep/ros)
 
-(defvar *first-arg-dispatch* nil)
+(defun print-full-help (&optional (stream *standard-output*))
+  (format stream "Welcome to gdep version 0.0.1!~%")
+  (format stream "A utiltiy for managing programs locally installed from source.~%")
+  (format stream "~%Usage: gdep [options...] commmand [arguments...]~%~%")
+  (print-available-commands)
+  (format stream "~%")
+  (format stream "Receive more details about a command with~%~6Tgdep help [command]~%~%"))
 
-(defun print-help (&rest args)
-  (declare (ignore args))
-  "Print this help text."
-  (format t "Welcome to gdep version 0.0.1!~%")
-  (format t "A utiltiy for managing programs locally installed from source.~%")
-  (format t "~%Usage: gdep [options] commmand [arguments...]~%~%")
-  (format t "Available commands:~%")
-  (iter (for (string function) in-hashtable *first-arg-dispatch*)
-	(format t "~&~4T~A~A~A~21T~A~%"
-		(cl-ansi-text:make-color-string :white :effect :bright)
-		string cl-ansi-text:+reset-color-string+
-		(documentation function 'function)))
-  (format t "~%")
-  (finish-output))
+(defcommand help (location want-info &rest args)
+    ("Print this help text" :more-info '("Usage: gdep help [command]~%"
+					 "get detailed infomation on how to use [command]"))
+  (declare (ignore args location))
+  (cond
+    (want-info (unless (print-info-text (first want-info))
+		 (format t "~A ~A~%" (cl-ansi-text:red "Unrecognized command:")
+			 want-info)
+		 (uiop:quit 22)))
+    (t (print-full-help))))
 
-(setf *first-arg-dispatch*
-      (make-hash:make-hash :initial-contents
-			   (list "help"    #'print-help
-				 "init"    #'gdep/init-project:init-project
-				 ;; "remove"    #'remove-dep
-				 ;; "install"   #'install-project
-				  ;; "uninstall" #'uninstall-project)
-				  )
-			   :test 'equal))
+
 
 ;; as of August 2018, the terminfo lisp package doesn't support 32 bit terminfo files,
 ;; so we must try to use the old versions:
@@ -67,7 +61,7 @@ exec ros -Q -- $0 "$@"
   (gdep/data-init:data-dir-init)
   ;; figure out what the user wants:
   (let* ((first (car argv))
-	 (func (gethash first *first-arg-dispatch*)))
+	 (func (get-command-func first)))
     (cond
       ((functionp func)
        (funcall func *default-pathname-defaults* (cdr argv)))
@@ -76,7 +70,7 @@ exec ros -Q -- $0 "$@"
 	       (if (symbolp first)
     		   ""
     		   first))))
-       (print-help)
+       (help *default-pathname-defaults* (cdr argv))
        ;; return "invalid argument"
        (uiop:quit 22)))))
 ;;; vim: set ft=lisp lisp:
