@@ -62,7 +62,7 @@
 	(error 'directory-creation-error :location dir))
       t)))
 
-(defun run-script (script location)
+(defun run-script (script location &key (on-error t))
   (declare (type pathname script location))
   (assert (uiop:file-exists-p script))
   (restart-case
@@ -74,7 +74,7 @@
       (create-dir location)))
   (let ((command (concatenate 'string (namestring script) " " (namestring location))))
     (format *debug-io* "Running shell script: ~S~%" command)
-    (inferior-shell:run/interactive command)))
+    (inferior-shell:run/interactive command :on-error on-error)))
 
 (defmacro scan-types ((data-dir type-dir) (pathname type-name) &body body)
   "Iterate the subdirectories in the path DATA-DIR/TYPE-DIR with PATHNAME bound to the

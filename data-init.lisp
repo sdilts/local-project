@@ -19,6 +19,10 @@
   (let ((first-run (not (uiop:directory-exists-p *data-directory*)))
 	(db-created nil))
     (when first-run
+      (warn (format nil "Data directory ~A not found. Some functionality will not work."
+		    *data-directory*))
+      (format t "Creating data dir at ~A"
+	      *data-directory*)
       (create-dir *data-directory*))
     (handler-bind ((simple-warning
 		    (lambda (c)
