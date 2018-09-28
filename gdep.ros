@@ -28,13 +28,13 @@ exec ros -Q -- $0 "$@"
   (format stream "Receive more details about a command with~%~6Tgdep help [command]~%~%"))
 
 (defcommand help (location want-info &rest args)
-    ("Print this help text" :more-info '("Usage: gdep help [command]~%"
-					 "get detailed infomation on how to use [command]"))
+    ("Print this help text" :more-info '("Usage: gdep help [command]"
+					 " Get detailed information on how to use [command]"))
   (declare (ignore args location))
   (cond
     (want-info (unless (print-info-text (first want-info))
 		 (format t "~A ~A~%" (cl-ansi-text:red "Unrecognized command:")
-			 want-info)
+			 (first want-info))
 		 (uiop:quit 22)))
     (t (print-full-help))))
 
