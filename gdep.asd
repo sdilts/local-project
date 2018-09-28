@@ -5,7 +5,7 @@
 
 (asdf:defsystem #:gdep
   :name "gdep"
-  :description "Describe gdep here"
+  :description "A command line utilty for managing locally compiled programs"
   :author "Your Name <your.name@example.com>"
   :license  "GPL"
   :version "0.0.1"

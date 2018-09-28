@@ -1,11 +1,7 @@
 (defpackage #:gdep/create-project
   (:use #:cl #:gdep/project-properties)
   (:import-from #:gdep/project
-		:project
-		:build-type
-		:remote-type
-		:project-location
-		:project-dependencies)
+		:project)
   (:import-from #:gdep/util
 		:run-menu)
   (:import-from #:gdep/build-types

@@ -16,7 +16,6 @@
 
 (export '(project
 	  build-type
-	  remote-type
 	  compilation-location
 	  project-location
 	  project-dependencies
