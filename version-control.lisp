@@ -32,9 +32,11 @@
 (defun add-version-control-type (name pull-script)
   (declare (type keyword name)
 	   (type pathname pull-script))
-  (lambdalite:insert :version-control
-		     (list :/version-control-type name
-			   :/pull-script pull-script)))
+  (if (select :version-control (where (equal :/version-control-type name)))
+      (warn (format nil "Build type ~A already present. Not adding." name))
+      (lambdalite:insert :version-control
+			 (list :/version-control-type name
+			       :/pull-script pull-script))))
 
 (defun get-version-control-instructions (name)
   (declare (type keyword name))

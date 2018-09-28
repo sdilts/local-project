@@ -40,9 +40,11 @@
 (defun add-build-type (type install-script build-script)
   (declare (type keyword type)
 	   (type pathname install-script build-script))
-  (insert :build-types
-	  (list :/build-type type :/script-install-path install-script
-		:/script-build-path build-script)))
+  (if (select :build-types (where (equal :/build-type type)))
+      (warn (format nil "Build type ~A already present. Not adding." type))
+      (insert :build-types
+	      (list :/build-type type :/script-install-path install-script
+		    :/script-build-path build-script))))
 
 (defclass build-instruction ()
   ((type :initarg :type
