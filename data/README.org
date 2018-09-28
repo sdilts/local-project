@@ -1,0 +1,32 @@
+* Build and Install Scripts
+  =gdep= uses external scripts to build and install the projects it
+  manages. This provides the flexibility needed to build a wide
+  variety of projects that use different build systems, and to make it
+  easier to add new ones without recompilation. Each script requires
+  one command line argument: the directory in which the
+  tool is to be run in. Here are some examples:
+** Build Scripts
+  + Make
+    #+BEGIN_SRC shell
+    #!/bin/sh
+    make -c $1
+    #+END_SRC
+  + Ninja
+    #+BEGIN_SRC shell
+    #!/bin/sh
+    cd $1
+    ninja
+    #+END_SRC
+** Install scripts
+   Installation is run as root, so 'sudo' is not used.
+   + Make
+     #+BEGIN_SRC shell
+     #!/bin/sh
+     make -C $1 install
+     #+END_SRC
+* Initialization Scripts
+   Initializeation scripts are not supported by =gdep=, but may be in
+   the future if enough people want it. Problems to tackle incldue
+   passing arguments to the configure command and setting environment
+   variables in a tool-agnostic way. Scripts may not be able to do
+   this, and a solution in Lisp may be needed.
