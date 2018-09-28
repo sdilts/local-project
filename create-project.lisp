@@ -9,7 +9,9 @@
   (:import-from #:gdep/util
 		:run-menu)
   (:import-from #:gdep/build-types
-		:get-build-types))
+		:get-build-types)
+  (:import-from #:gdep/version-control
+		:get-version-control-types))
 
 (in-package #:gdep/create-project)
 
@@ -36,17 +38,18 @@
 	(compilation-location)
 	(build-type)
 	(project-url "")
-	(build-types (get-build-types)))
+	(build-types (get-build-types))
+	(version-control-types (get-version-control-types)))
 
     (format t "Please enter the following information. You will be able to go back
 and change the values once everything is entered.~%")
     (format t "Project Name?~%> ")
     (setf project-name (read-line))
     (query-variable build-type "Build tool?" build-types)
-    (query-variable compilation-location "In source build?" *compilation-location-members*)
+    (query-variable compilation-location "In source build?" gdep/project-properties:*compilation-location-members*)
     (gdep/util:run-menu (:repeat-prompt t :always-show-help t :num-options-shown 0)
 	"Is this correct? Enter a number to change an option, or (y) to continue"
-       ("y" "Continue. Everything is correct."
+      ("y" "Continue. Everything is correct."
 	   (return-from run-menu))
       ("0" ("Project name is ~S" project-name)
 	   (setf project-name (read-line)))
@@ -54,10 +57,12 @@ and change the values once everything is entered.~%")
 	   (query-variable build-type "Build tool?" build-types))
       ("2" ("In source: ~A" compilation-location)
 	   (query-variable compilation-location "In source build?" *compilation-location-members*))
-      ("3" ("Project location: ~A" project-dir)
+      ("3" ("Version control type ~A" version-control-type)
+	   (query-variable version-control-type "Version control type?" version-control-types))
+      ("4" ("Project location: ~A" project-dir)
 	   (format t " > ")
 	   (setf project-dir (make-pathname :directory (read-line))))
-      ("4" ("Project url: ~A" project-url)
+      ("5" ("Project url: ~A" project-url)
 	   (format t " > ")
 	   (setf project-url (read-line))))
     (make-instance 'project
@@ -66,4 +71,5 @@ and change the values once everything is entered.~%")
 		   :version-control-type version-control-type
 		   :build-type build-type
 		   :url project-url
-		   :compilation-type compilation-location)))
+		   :version (local-time:timestamp-to-unix (local-time:now))
+		   :compilation-location compilation-location)))

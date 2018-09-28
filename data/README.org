@@ -30,3 +30,7 @@
    passing arguments to the configure command and setting environment
    variables in a tool-agnostic way. Scripts may not be able to do
    this, and a solution in Lisp may be needed.
+* Version control scripts
+  Version control scripts expect one argument: the base of the project
+  to pull/update/ect. If a seperate branch needs to be pulled, either
+  create a custom build type or set the default remote pull branch.

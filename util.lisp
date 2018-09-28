@@ -6,8 +6,11 @@
 (in-package :gdep/util)
 
 (export '(run-menu
+	  run-script
 	  directory-already-exists-error
-	  create-dir))
+	  directory-dne-error
+	  create-dir
+	  scan-types))
 
 (define-condition directory-already-exists-error (error)
   ((location :initarg :location :reader location))
@@ -28,6 +31,13 @@
    :location (error "You must supply a location"))
   (:report (lambda (condition stream)
 	     (format stream "Directory \"~S\" could not be created" (location condition)))))
+
+(define-condition directory-dne-error (error)
+  ((location :initarg :location :reader location))
+  (:default-initargs
+   :location (error "You must supply a location"))
+  (:report (lambda (condition stream)
+	     (format stream "Directory \"~S\" does not exist." (location condition)))))
 
 (defun create-dir (dir &key (error-already-exists nil))
   (assert (uiop:directory-pathname-p dir))
@@ -51,6 +61,40 @@
       (unless (uiop:directory-exists-p dir)
 	(error 'directory-creation-error :location dir))
       t)))
+
+(defun run-script (script location)
+  (declare (type pathname script location))
+  (assert (uiop:file-exists-p script))
+  (restart-case
+      (when (not (uiop:directory-exists-p location))
+	(error 'directory-dne-error :location location))
+    (create-directory ()
+      :report (lambda (stream)
+		(format stream "Create directory ~A" location))
+      (create-dir location)))
+  (let ((command (concatenate 'string (namestring script) " " (namestring location))))
+    (format *debug-io* "Running shell script: ~S~%" command)
+    (inferior-shell:run/interactive command)))
+
+(defmacro scan-types ((data-dir type-dir) (pathname type-name) &body body)
+  "Iterate the subdirectories in the path DATA-DIR/TYPE-DIR with PATHNAME bound to the
+path of the subdirectory and TYPENAME bound to subdirectory name translated into a keyword."
+  (let ((dir-list (gensym "dir-list"))
+	(build-keyword-func (gensym "build-keyword-func")))
+    `(let ((,dir-list (uiop:subdirectories (merge-pathnames (make-pathname :directory
+									   '(:relative
+									     ,type-dir))
+							    ,data-dir))))
+       (flet ((,build-keyword-func (string)
+		(ecase (readtable-case *readtable*)
+		  (:upcase (intern (string-upcase string) "KEYWORD"))
+		  (:downcase (intern (string-downcase string) "KEYWORD"))
+		  (:preserve (intern string "KEYWORD")))))
+	 (dolist (,pathname ,dir-list)
+	   (let ((,type-name (,build-keyword-func (alexandria:last-elt
+						   (pathname-directory ,pathname)))))
+	     ,@body))))))
+
 
 (defun build-help-text (forms)
   `(progn
