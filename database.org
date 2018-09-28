@@ -1,0 +1,31 @@
+* build table
+  Table looks like:
+  | type   | script-build-path                  | script-install-path                  |
+  |--------+------------------------------------+--------------------------------------|
+  | :make  | #p"~/.gdep/scripts/make/build.sh"  | #p"~/.gdep/scripts/make/install.sh"  |
+  | :0ad   | #p"~/.gdep/scripts/0ad/build.sh"   | #p"~/.gdep/scripts/0ad/install.sh"   |
+  | :ninja | #p"~/.gdep/scripts/ninja/build.sh" | #p"~/.gdep/scripts/ninja/install.sh" |
+* Dependency tree
+** Dependency table
+   | dependency-id | dependency-name | type     | version-date |
+   |---------------+-----------------+----------+--------------|
+   |             1 | wlroots         | :project |              |
+   |             2 | stumpwm         | :project |              |
+   |             3 | Xorg            | :package |              |
+   |             4 | mahogany        | :project |              |
+
+** Project table
+   =version= is a unix time stamp
+   | dependency-id | location                  | version-control | build-type   | compilation-location  |
+   |---------------+---------------------------+-----------------+--------------+-----------------------|
+   |             1 | #p"~/Applications/wlroots | :git            | :ninja       | :out-of-source        |
+   |             2 | #p"~/Applications/stumpwm | :git            | :make        | :in-source            |
+   |             4 | #p"~/Programs/mahogany"   | :git            | :roswell     | :in-source            |
+** Requires table
+   =last-version-date= stores the date that the dependency was lasted checked on.
+   Value is a unix timestamp. If =reqires='s version-date is more recent that the
+   date shown, it means that =project= must be recompiled.
+   | project | requires   | last-version-date |
+   |---------+------------+-------------------|
+   |       2 |          3 |        1531185226 |
+   |       4 |          1 |        1531185226 |
