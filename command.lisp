@@ -46,7 +46,8 @@
     (setf (gethash name *gdep-commands*) command)
     ;; check to see how long the command is for pretty printing:
     (when (> (length name) *longest-command-length*)
-      (setf *longest-command-length* (length name)))))
+      (setf *longest-command-length* (length name))))
+  command)
 
 (declaim (inline get-command))
 (defun get-command (command-name)
