@@ -59,10 +59,15 @@
 (defun print-available-commands (&optional (stream *standard-output*))
   (format stream "Available commands:~%")
   (iter (for (cmd-name command) in-hashtable *gdep-commands*)
-	(let ((doc (command-info command)))
+	(let ((doc (command-info command))
+	      ;; the base indent, plus the length of the ansi color directive if present
+	      (description-indent (if cl-ansi-text:*enabled*
+				      (+ 4 5)
+				      5)))
 	  (cl-ansi-text:with-color (:white :effect :bright :stream stream)
 	    (format stream "~&~4T~A" cmd-name))
-	  (format stream "~vT~A" (+ 5 *longest-command-length*) doc)))
+	  (format stream "~vT~A" (+ description-indent *longest-command-length*)
+		  doc)))
   (format stream "~%"))
 
 (defun print-info-text (command-name &optional (stream *standard-output*))
