@@ -39,27 +39,18 @@
 
 (defun get-new-dependency-id ()
   ;; A hack: store a counter and increment it every time we need a new id
-    (if-let ((id (:/project-counter (select1 :counter-db))))
-      (progn
-	(lambdalite:update :counter-db (lambdalite:where t) (lambdalite:keyset
-							     :/project-counter
-							     (+ 1 id)))
-	(return-from get-new-dependency-id id))
-      (progn
-	(lambdalite:insert :counter-db '(:/project-counter 1))
-	(return-from get-new-dependency-id 0))))
-
-;; (defmacro contains (string)
-;;   `(lambda (x)
-;;      (cl-ppcre:scan  x)))
-
-(defun contains (string)
-  `(cl-ppcre:create-scanner (concatenate 'string ".*" ,string ".*")))
-
-(defun decode-project (row)
-  "Takes a row from the database and converts it into a project object")
+  (if-let ((id (:/project-counter (select1 :counter-db))))
+    (progn
+      (lambdalite:update :counter-db (lambdalite:where t) (lambdalite:keyset
+							   :/project-counter
+							   (+ 1 id)))
+      (return-from get-new-dependency-id id))
+    (progn
+      (lambdalite:insert :counter-db '(:/project-counter 1))
+      (return-from get-new-dependency-id 0))))
 
 (defun get-dependency (dependency-name)
+  "Retrives a dependency from the database"
   (if-let ((dep-part (lambdalite:select1 :dependency-db
 					 (where (equal :/dependency-name dependency-name)))))
     (make-instance 'dependency
@@ -102,12 +93,8 @@
 (defun update-project (project)
   "Update's the given project in the database.")
 
-(defun search-project (&key project-name project-location)
-  "Searches for the project with the given name"
-  ;; (let ((package-entires (lambdalite:select :dependency-table (where
-  )
-
-;; (defun search-project-properties (&key location build-type)
+(defun search-project (&key project-name project-location build-type version-control-type)
+  "Searches for the project with the given attributes")
 
 (defun all-projects ()
   "Return a list of all projects in the database")

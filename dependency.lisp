@@ -5,6 +5,8 @@
 
 (export '(dependency
 	  dependency-name
+	  dependency-id
+	  dependency-type
 	  dependency-version))
 
 (defclass dependency ()
@@ -12,6 +14,11 @@
 	 :type 'string)
   (version :initarg :version
 	   :accessor dependency-version)
-   (id :initarg id
+   (id :initarg :id
        :accessor dependency-id
-       :type #'numberp)))
+       :type #'numberp)
+   (type :initarg :type
+	 :reader dependency-type
+	 :type keyword)))
+
+;; (defmethod print-object

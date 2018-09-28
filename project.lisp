@@ -2,7 +2,14 @@
   (:use #:cl
 	#:gdep/dependency-protocol
 	#:gdep/dependency
-	#:gdep/project-properties))
+	#:gdep/project-properties)
+  (:import-from #:gdep/version-control
+		#:run-update
+		#:get-version-control-instructions)
+  (:import-from #:gdep/build-types
+		#:get-build-instructions
+		#:run-build
+		#:run-install))
 
 
 (in-package #:gdep/project)
@@ -14,18 +21,23 @@
 	  project-location
 	  project-dependencies
 	  project-url
+	  project-update-source
+	  project-compile
 	  version-control-type))
 
 (defclass project (dependency)
   ((location :initarg :location
 	     :accessor project-location
+	     :initform (error "Must specify location")
 	     :type 'pathname)
    (version-control-type :initarg :version-control-type
 			 :accessor version-control-type)
    (build-type :initarg :build-type
-		      :reader build-type
-		      :type 'build-type)
-   (compilation-location :initarg :compilation-type
+	       :reader build-type
+	       :initform (error "Must specify build-type")
+	       :type 'build-type)
+  (compilation-location :initarg :compilation-location
+			:initform (error "MUst specify comipation location")
 			 :accessor compilation-location)
    (url :initarg :url
 	:accessor project-url
@@ -37,7 +49,29 @@
     :url ""
     :version 0))
 
-;; (defmethod print-object
+(defmethod project-update-source ((project project))
+  "Updates the source code of the project"
+  (run-update (get-version-control-instructions (version-control-type project))
+	      (project-location project)))
+
+(defun  get-build-location (project)
+  (case (compilation-location project)
+    (:in-source (project-location project))
+    (:out-of-source (merge-pathnames (make-pathname :directory '(:relative "build"))
+		     (project-location project)))))
+
+(defmethod project-compile ((project project))
+  (let ((build-instruction (get-build-instructions (build-type project)))
+	(build-location (get-build-location project)))
+    (run-build build-instruction build-location)))
+
+;; (defmethod print-object ((object project) stream)
+;;   (print-unreadable-object (object stream :type t)
+;;     (with-slots (name id location version-control-type build-type compilation-location
+;; 		      url)
+;; 	object
+;;       (format stream "name: ~A id: location: ~A ~A ~A ~A ~A ~A" name id location
+;; 	      version-control-type build-type compilation-location url))))
 
 #|
 Project updating order:

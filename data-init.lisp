@@ -7,7 +7,9 @@
   (:import-from #:lambdalite
 		:load-db)
   (:import-from #:gdep/build-types
-		:scan-build-types))
+		:scan-build-types)
+  (:import-from #:gdep/version-control
+		:scan-version-control))
 
 (in-package #:gdep/data-init)
 
@@ -52,4 +54,5 @@
     (when db-created
       (format *debug-io* "~&Initializing database...~%")
       (scan-build-types *data-directory*)
+      (scan-version-control *data-directory*)
       (format *debug-io* "~&Database initialized~%~%"))))
