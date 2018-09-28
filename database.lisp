@@ -90,6 +90,18 @@
 				:/build-type (build-type project)
 				:/url (project-url project))))))
 
+(defun join (table1 table2 attribute &key (test #'equal))
+  (let ((tbl (make-hash-table))
+	(merge-table ()))
+     ;; add one of the tables to a hashtable:
+     (dolist (entry table1)
+       (setf (gethash (funcall attribute entry) tbl) entry))
+     (dolist (entry table2)
+       (let ((to-merge (copy-list (gethash (funcall attribute entry) tbl))))
+	 (remf to-merge attribute)
+	 (push (append entry to-merge) merge-table)))
+     merge-table))
+
 (defun update-project (project)
   "Update's the given project in the database.")
 
@@ -97,7 +109,22 @@
   "Searches for the project with the given attributes")
 
 (defun all-projects ()
-  "Return a list of all projects in the database")
+  "Return a list of all projects in the database"
+  (let ((all-proj-rows (join (select :dependency-db)
+			     (select :project-db)
+			     :/dependency-id)))
+    (mapcar (lambda (row)
+	     (make-instance 'project
+			:location (:/location row)
+			:version-control-type (:/version-control-type row)
+			:build-type (:/build-type row)
+			:compilation-location (:/compilation-location row)
+			:url (:/url row)
+			:name (:/dependency-name row)
+			:version (:/dependency-version row)
+			:id (:/dependency-id row)
+			:type (:/dependency-type row)))
+	    all-proj-rows)))
 
 (defun all-dependencies ()
   "return a list of all projects and dependencies in the database")
