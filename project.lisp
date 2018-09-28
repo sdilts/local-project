@@ -22,7 +22,10 @@
 	  project-url
 	  project-update-source
 	  project-compile
-	  version-control-type))
+	  version-control-type
+	  compilation-error
+	  update-source-error
+	  project-error-project))
 
 (defclass project (dependency)
   ((location :initarg :location
@@ -48,10 +51,37 @@
     :url ""
     :version 0))
 
+(define-condition project-error ()
+  ((project :initarg :project
+	    :reader project-error-project))
+  (:default-initargs
+   :project (error "You must supply a project")))
+
+(define-condition compilation-error (project-error uiop:subprocess-error)
+  ()
+  (:report (lambda (condition stream)
+	     (format stream "Error compiling project~% ~A.~%Process exited with error code ~A"
+		     (project-error-project condition)
+		     (uiop:subprocess-error-code condition)))))
+
+(define-condition update-source-error (project-error uiop:subprocess-error)
+  ()
+  (:report (lambda (condition stream)
+	     (format stream "Error updating source of project~% ~A.~%Process exited with error code ~A"
+		     (project-error-project condition)
+		     (uiop:subprocess-error-code condition)))))
+
 (defmethod project-update-source ((project project))
   "Updates the source code of the project"
-  (run-update (get-version-control-instructions (version-control-type project))
-	      (project-location project)))
+  (handler-case  (run-update (get-version-control-instructions (version-control-type project))
+			     (project-location project))
+    (uiop:subprocess-error (c)
+      (cerror "Ignore update error"
+	      'update-source-error
+	      :project project
+	      :code (uiop:subprocess-error-code c)
+	      :command (uiop:subprocess-error-command c)
+	      :process (uiop:subprocess-error-process c)))))
 
 (defun  get-build-location (project)
   (case (compilation-location project)
@@ -62,7 +92,14 @@
 (defmethod project-compile ((project project))
   (let ((build-instruction (get-build-instructions (build-type project)))
 	(build-location (get-build-location project)))
-    (run-build build-instruction build-location)))
+    (handler-case (run-build build-instruction build-location)
+      (uiop:subprocess-error (c)
+	(cerror "Ignore compilation error"
+		'compilation-error :project project
+		:code (uiop:subprocess-error-code c)
+		:command (uiop:subprocess-error-command c)
+		:process (uiop:subprocess-error-process c))))))
+
 
 ;; (defmethod print-object ((object project) stream)
 ;;   (print-unreadable-object (object stream :type t)
