@@ -14,11 +14,3 @@
 
 ;; TODO: change this:
 (defvar *pkg-database* "rpm")
-
-(defun change-data-directory (new-path)
-  (assert (pathnamep new-path))
-  (setf *data-directory* new-path)
-  (format t "Data directory changed to ~A. To make the change permanent, add
-(setf gdep/settings:*data-directory ~S)~%to ~A.~%"
-	  *data-directory* *data-directory*
-	  (merge-pathnames (user-homedir-pathname) #p".gdeprc")))
