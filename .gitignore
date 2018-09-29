@@ -2,4 +2,5 @@
 *~
 \#*\#
 /.emacs.desktop
-/.emacs.desktop.lock
+/.emacs.desktop.lock# database directory
+data/db
