@@ -1,7 +1,8 @@
 (defpackage #:gdep/update-commands
   (:use :cl :alexandria)
   (:import-from #:gdep/command
-		#:defcommand)
+		#:defcommand
+		#:print-info-text)
   (:import-from #:gdep/project
 		#:project-update-source
 		#:project-compile
@@ -73,6 +74,11 @@
      :more-info '("Usage: gdep update [projects...]"
 		  " Download and compile, but do not install, the listed projects."
 		  " If you want to update all projects at once, use the update-all command."))
+  (when (not command-line-args)
+      (format *debug-io* "~A At least one project name must be given~%~%"
+	      (cl-ansi-text:red "Error:" :effect :bright))
+      (print-info-text "update" *debug-io*)
+      (uiop:quit 22))
   (let ((not-found ())
 	(projects ()))
     (dolist (project-name command-line-args)
