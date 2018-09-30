@@ -22,6 +22,7 @@
 	  project-url
 	  project-update-source
 	  project-compile
+	  project-root-install-p
 	  version-control-type
 	  compilation-error
 	  update-source-error
@@ -35,12 +36,15 @@
    (version-control-type :initarg :version-control-type
 			 :accessor version-control-type)
    (build-type :initarg :build-type
-	       :reader build-type
+	       :accessor build-type
 	       :initform (error "Must specify build-type")
 	       :type 'build-type)
   (compilation-location :initarg :compilation-location
 			:initform (error "MUst specify comipation location")
-			 :accessor compilation-location)
+			:accessor compilation-location)
+   (root-install-p :initarg :root-install
+		   :initform T
+		   :accessor project-root-install-p)
    (url :initarg :url
 	:accessor project-url
 	:type #'stringp)

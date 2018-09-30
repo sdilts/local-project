@@ -10,7 +10,7 @@
 	  dependency-version))
 
 (defclass dependency ()
-  ((name :initarg :name :reader dependency-name
+  ((name :initarg :name :accessor dependency-name
 	 :type 'string)
   (version :initarg :version
 	   :accessor dependency-version)

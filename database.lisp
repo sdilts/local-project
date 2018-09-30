@@ -24,6 +24,7 @@
   :/build-type #'keywordp
   :/compilation-location #'keywordp
   :/version-date #'numberp
+  :/root-install #'(lambda (x) (declare (ignore x)) t)
   :/url #'stringp)
 
 ;; for the requires table
@@ -72,6 +73,7 @@
 			:version-control-type (:/version-control-type project-part)
 			:build-type (:/build-type project-part)
 			:compilation-location (:/compilation-location project-part)
+			:root-install (:/root-install project-part)
 			:url (:/url project-part))))))
 
 (defun add-project (project)
@@ -88,6 +90,7 @@
 				:/version-control-type (version-control-type project)
 				:/compilation-location (compilation-location project)
 				:/build-type (build-type project)
+				:/root-install (project-root-install-p project)
 				:/url (project-url project))))))
 
 (defun join (table1 table2 attribute &key (test #'equal))
