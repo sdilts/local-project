@@ -106,7 +106,19 @@
      merge-table))
 
 (defun update-project (project)
-  "Update's the given project in the database.")
+  "Updates the given project in the database."
+  (with-tx
+    (update :dependency-db (where (equal (dependency-id project)
+					 :/dependency-id))
+	    (keyset :/dependency-name (dependency-name project)))
+    (update :/project-db (where (equal (dependency-id old-project)
+				       :/dependency-id))
+	    (keyset :/location (project-location project)
+		    :/version-control-type (version-control-type project)
+		    :/build-type (build-type project)
+		    :/compilation-location (compilation-location project)
+		    :/root-install (project-root-install-p project)
+		    :/url (project-url project)))))
 
 (defun search-project (&key project-name project-location build-type version-control-type)
   "Searches for the project with the given attributes")
