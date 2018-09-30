@@ -1,4 +1,4 @@
 #!/bin/sh
 
 cd $1
-ninja
+ninja &> /dev/null

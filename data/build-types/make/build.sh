@@ -1,3 +1,3 @@
 #!/bin/sh
 
-make -C $1
+make -j3 -C $1 &> /dev/null
