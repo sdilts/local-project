@@ -6,7 +6,7 @@
 ;;     (:use-reexport #:gdep/data-dir))
 
 (defpackage #:gdep/all
-  (:use :cl #:gdep/data-init #:gdep/init-project
+  (:use :cl #:gdep/data-init #:gdep/project-management
 	#:gdep/update-commands #:gdep/command))
 
 ;; (in-package #:gdep)

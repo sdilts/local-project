@@ -7,7 +7,8 @@
 	  all-dependencies
 	  get-project
 	  get-dependency
-	  add-project))
+	  add-project
+	  update-project))
 
 ;; for the dependency table:
 (defattributes

@@ -1,21 +1,22 @@
-(defpackage #:gdep/create-project
-  (:use #:cl #:gdep/project-properties
-	#:gdep/project)
-  (:import-from #:gdep/dependency
-		#:dependency-name)
-  (:import-from #:gdep/database
-		#:get-dependency)
-  (:import-from #:gdep/util
+(defpackage #:gdep/project-management
+  (:use :cl :gdep/project :gdep/dependency
+	:gdep/database)
+  (:import-from :gdep/util
+		:print-error
 		:run-menu)
-  (:import-from #:gdep/build-types
+  (:import-from :gdep/build-types
 		:get-build-types)
-  (:import-from #:gdep/version-control
-		:get-version-control-types))
+  (:import-from :gdep/version-control
+		:get-version-control-types)
+  (:import-from :gdep/command
+		:defcommand)
+  (:import-from :alexandria
+		:if-let))
 
-(in-package #:gdep/create-project)
+(in-package #:gdep/project-management)
 
-(export '(create-project-interactively
-	  edit-project-interactively))
+(export '(init-project
+	  edit-project))
 
 (defun read-keyword-and-verify (valid-keywords)
   (loop
@@ -90,6 +91,8 @@
 	(build-types (get-build-types))
 	(version-control-types (get-version-control-types)))
 
+    ;; the project ID gets assigned when the project is inserted into the database
+    ;; That's why it isn't mentinoned here
     (format t "Please enter the following information. You will be able to go back
 and change the values once everything is entered.~%")
     (setf project-name (query-name))
@@ -101,9 +104,42 @@ and change the values once everything is entered.~%")
 				      :version-control-type version-control-type
 				      :build-type build-type
 				      :url project-url
-				      :root-install root-install-p
 				      :version (local-time:timestamp-to-unix (local-time:now))
 				      :compilation-location compilation-location)))
       (format t "Is everything correct? ")
       (edit-project-interactively new-project)
       new-project)))
+
+(defun check-project (new-project)
+  T)
+
+(defcommand init-project (project-location command-line-args)
+    ("Create a new project in the current directory"
+     :command-used "init"
+     :more-info "Usage: gdep init")
+  ;; ignore the command line args for now, we can use them if we need them:
+  (declare (ignore command-line-args))
+  ;; don't waste the user's time: check if we are already in a project:
+  ;; (already-exists-p
+  (let ((new-project (create-project-interactively project-location)))
+    (when (not (check-project new-project))
+      ;; invalid arguement:
+      (uiop:quit 22))
+    (add-project new-project)
+    (format t "Project ~A added.~%" (dependency-name new-project))))
+
+(defcommand edit-project (project-location command-line-args)
+    ("Edit the properties of a project"
+     :command-used "edit"
+     :more-info "Usage: gdep edit [project-name]")
+  (if-let (project (get-project (first command-line-args)))
+    (progn
+      (format t "Updating project ~A" (cl-ansi-text:magenta (first command-line-args)
+							    :effect :bright))
+      (inspect project)
+      (edit-project-interactively project)
+      (update-project project)
+      (format t (cl-ansi-text:green "Project Updated~%" :effect :bright)))
+    (progn
+      (print-error t "Project ~A not found" (first command-line-args))
+      (uiop:quit 22))))
