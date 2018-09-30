@@ -112,7 +112,7 @@
     (update :dependency-db (where (equal (dependency-id project)
 					 :/dependency-id))
 	    (keyset :/dependency-name (dependency-name project)))
-    (update :/project-db (where (equal (dependency-id old-project)
+    (update :project-db (where (equal (dependency-id project)
 				       :/dependency-id))
 	    (keyset :/location (project-location project)
 		    :/version-control-type (version-control-type project)

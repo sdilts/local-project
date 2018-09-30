@@ -85,5 +85,5 @@
     (add-build-type type-name
 		    (merge-pathnames dir (make-pathname :name "install"
 							:type "sh"))
-		    (merge-pathnames dir (make-pathname :name "build.sh"
+		    (merge-pathnames dir (make-pathname :name "build"
 							:type "sh")))))

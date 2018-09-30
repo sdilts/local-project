@@ -43,7 +43,7 @@
 			:initform (error "MUst specify comipation location")
 			:accessor compilation-location)
    (root-install-p :initarg :root-install
-		   :initform T
+		   :initform :yes
 		   :accessor project-root-install-p)
    (url :initarg :url
 	:accessor project-url

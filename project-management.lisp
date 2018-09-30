@@ -55,7 +55,7 @@
 	"Enter a number to change an option, or (y) to continue"
       ("y" "Continue. Everything is correct."
 	   (return-from run-menu))
-      ("0" ("Project name: ~S" (dependency-name project))
+      ("0" ("Project name: ~A" (dependency-name project))
 	   (setf (dependency-name project) (query-name)))
       ("1" ("Build tool: ~A" (build-type project))
 	   (query-variable (build-type project)
@@ -104,6 +104,7 @@ and change the values once everything is entered.~%")
 				      :version-control-type version-control-type
 				      :build-type build-type
 				      :url project-url
+				      :root-install root-install-p
 				      :version (local-time:timestamp-to-unix (local-time:now))
 				      :compilation-location compilation-location)))
       (format t "Is everything correct? ")
