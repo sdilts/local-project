@@ -95,6 +95,12 @@ path of the subdirectory and TYPENAME bound to subdirectory name translated into
 						   (pathname-directory ,pathname)))))
 	     ,@body))))))
 
+(defmacro print-error (stream fmt-string &rest fmt)
+  `(progn
+     (format ,stream (cl-ansi-text:red "Error: "))
+     (funcall ,stream ,fmt-string ,@fmt)))
+
+
 
 (defun build-help-text (forms)
   `(progn
@@ -124,7 +130,8 @@ path of the subdirectory and TYPENAME bound to subdirectory name translated into
 (defmacro run-menu ((&key (default-choice t) (num-options-shown 2) (repeat-prompt nil)
 			  (always-show-help nil))
 		       prompt &body options)
-  "(run-menu (menu-options) prompt options), where options is of form (choice-string option-info &body forms).
+  "(run-menu (menu-options) prompt options), where options is a list with entries of form
+(choice-string option-info &body forms). OPTION-INFO can either be a string or (fmt-string &rest vals).
 The menu wil only exit when (return-from run-menu) is called"
   (declare (ignore default-choice))
   (let ((print-help (build-help-text options))
