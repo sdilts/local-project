@@ -10,6 +10,7 @@
 	  directory-already-exists-error
 	  directory-dne-error
 	  create-dir
+	  print-error
 	  scan-types))
 
 (define-condition directory-already-exists-error (error)
@@ -73,7 +74,7 @@
 		(format stream "Create directory ~A" location))
       (create-dir location)))
   (let ((command (concatenate 'string (namestring script) " " (namestring location))))
-    (format *debug-io* "Running shell script: ~S~%" command)
+    ;; (format *debug-io* "Running shell script: ~S~%" command)
     (inferior-shell:run/interactive command :on-error on-error)))
 
 (defmacro scan-types ((data-dir type-dir) (pathname type-name) &body body)

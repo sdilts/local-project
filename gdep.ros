@@ -28,7 +28,7 @@ exec ros -Q -- $0 "$@"
   (format stream "Receive more details about a command with~%~6Tgdep help [command]~%~%"))
 
 (defcommand help (location want-info &rest args)
-    ("Print this help text" :more-info '("Usage: gdep help [command]"
+    ("Print information about the availables commands" :more-info '("Usage: gdep help [command]"
 					 " Get detailed information on how to use [command]"))
   (declare (ignore args location))
   (cond
