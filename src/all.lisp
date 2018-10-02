@@ -8,14 +8,3 @@
 (defpackage #:lpro/all
   (:use :cl #:lpro/data-init #:lpro/project-management
 	#:lpro/update-commands #:lpro/command))
-
-;; (in-package #:lpro)
-
-
-
-;; (setf (getf make-hash:*hash-factory-defaults* :test) #'equal)
-
-;; (eval-when (:compile-toplevel :load-toplevel :execute)
-;;   (make-hash:install-hash-reader ()))
-
-;; (defun foo ())
