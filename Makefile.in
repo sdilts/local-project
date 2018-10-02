@@ -1,0 +1,27 @@
+ROS_BIN=@ROSWELL@
+INSTALL_PREFIX=@prefix@
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+
+BIN_DIR=@bindir@
+DATA_ROOT_DIR=@datarootdir@
+DATA_DIR=@DATA_DIR@
+
+FILES= lpro.ros lpro.asd ./src/all.lisp ./src/build-types.lisp ./src/command.lisp ./src/database.lisp ./src/data-init.lisp ./src/dependency.lisp ./src/dependency-protocol.lisp ./src/project.lisp ./src/project-management.lisp ./src/update-commands.lisp ./src/util.lisp ./src/version-control.lisp ./src/settings.lisp
+
+lpro: $(FILES)
+	$(ROS_BIN) build lpro.ros
+
+clean:
+	rm lpro
+
+install: lpro
+	test -z "$(destdir)$(BIN_DIR)" || mkdir -p "$(destdir)$(BIN_DIR)"
+	install -m 755 lpro "$(destdir)$d(BIN_DIR)"
+	test -z "$(destdir)$(DATA_ROOT_DIR)" || mkdir -p "$(destdir)$(DATA_ROOT_DIR)"
+	cp -r data $(DATA_DIR)
+
+uninstall:
+	rm "$(destdir)$(BIN_DIR)"/lpro
+	rm -r $(DATA_DIR)

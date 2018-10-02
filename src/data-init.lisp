@@ -4,7 +4,8 @@
   (:import-from #:lpro/command
 		#:defcommand)
   (:import-from #:lpro/settings
-		:*data-directory*)
+		:*data-directory*
+	        :*db-directory*)
   (:import-from #:lambdalite
 		:load-db)
   (:import-from #:lpro/build-types
@@ -45,7 +46,7 @@
 		      (setf db-created t)
 		      (muffle-warning c))))
       (load-db :path (uiop:ensure-directory-pathname (merge-pathnames #p"db"
-								      *data-directory*))))
+								      *db-directory*))))
     (when db-created
       (format *debug-io* "~&Initializing database...~%")
       (scan-scripts)
