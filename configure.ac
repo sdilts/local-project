@@ -3,6 +3,9 @@ AC_INIT(local-project, esyscmd(grep :version lpro.asd | cut -d\" -f2 | tr -d \\n
 AC_SUBST(DATA_DIR)
 AC_SUBST(PKG_MANAGER)
 AC_SUBST(PKG_DB)
+AC_SUBST(PROJECT_ROOT_DIR)
+
+PROJECT_ROOT_DIR="`pwd`"
 
 dnl AC_ARG_WITH(data-dir,
 dnl 	[  --data-dir-path=PATH   specify the location of the gdep database directory],
@@ -43,7 +46,7 @@ fi
 AC_OUTPUT
 AC_CONFIG_FILES(src/settings.lisp)
 AC_CONFIG_FILES(Makefile)
-
+AC_CONFIG_FILES(lpro.ros)
 DATA_DIR="$prefix/share/lpro"
 
 AC_OUTPUT

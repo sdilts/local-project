@@ -11,3 +11,4 @@ data/db
 src/settings.lisp
 Makefile
 config.*
+lpro.ros

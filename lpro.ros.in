@@ -7,10 +7,10 @@ exec ros -Q -- $0 "$@"
 (asdf:initialize-source-registry
  '(:source-registry
    ;; TODO: change this directory:
-   (:directory #p"~/Programs/git-install/")
+   (:directory #p"@PROJECT_ROOT_DIR@")
    :inherit-configuration))
 (setf asdf:*central-registry*
-      (append (list (merge-pathnames #p"~/Programs/git-install/"))
+      (append (list (merge-pathnames #p"@PROJECT_ROOT_DIR@/src/"))
 	      asdf:*central-registry*))
 (ql:quickload "lpro" :silent t)
 
