@@ -29,7 +29,7 @@
   (let ((update-source-failed (update-errors-update-source update-errors))
 	(compilation-failed (update-errors-compile update-errors)))
     (when update-source-failed
-      (format t "~A These projects failed to update their source code:"
+      (format t "~A These projects failed to update their source code:~%"
 	      (cl-ansi-text:red "Error:" :effect :bright))
       (dolist (project update-source-failed)
 	(format t "~4T~A~%" (dependency-name project))))
