@@ -1,7 +1,7 @@
-(defpackage #:gdep/database
-  (:use :cl :lambdalite :alexandria :gdep/project :gdep/dependency))
+(defpackage #:lpro/database
+  (:use :cl :lambdalite :alexandria :lpro/project :lpro/dependency))
 
-(in-package #:gdep/database)
+(in-package #:lpro/database)
 
 (export '(all-projects
 	  all-dependencies

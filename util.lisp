@@ -1,9 +1,9 @@
 ;; a file for functions that are shared across files
 
-(defpackage #:gdep/util
+(defpackage #:lpro/util
   (:use :cl :alexandria))
 
-(in-package :gdep/util)
+(in-package :lpro/util)
 
 (export '(run-menu
 	  run-script

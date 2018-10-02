@@ -1,21 +1,21 @@
-(defpackage #:gdep/update-commands
+(defpackage #:lpro/update-commands
   (:use :cl :alexandria)
-  (:import-from #:gdep/command
+  (:import-from #:lpro/command
 		#:defcommand
 		#:print-info-text)
-  (:import-from #:gdep/project
+  (:import-from #:lpro/project
 		#:project-update-source
 		#:project-compile
 		#:compilation-error
 		#:project-error-project
 		#:update-source-error)
-  (:import-from #:gdep/dependency
+  (:import-from #:lpro/dependency
 		#:dependency-name)
-  (:import-from #:gdep/database
+  (:import-from #:lpro/database
 		#:all-projects
 		#:get-project))
 
-(in-package #:gdep/update-commands)
+(in-package #:lpro/update-commands)
 
 ;; (defun update-project (project)
 ;;   (handler-case (project-update-source project)
@@ -71,7 +71,7 @@
 
 (defcommand update (current-directory command-line-args)
     ("Download and compile the updated source for the listed projects"
-     :more-info '("Usage: gdep update [projects...]"
+     :more-info '("Usage: lpro update [projects...]"
 		  " Download and compile, but do not install, the listed projects."
 		  " If you want to update all projects at once, use the update-all command."))
   (when (not command-line-args)

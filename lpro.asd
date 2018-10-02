@@ -2,9 +2,10 @@
 ;;
 ;;;; Copyright (c) 2018 Stuart Dilts
 
+(asdf:register-system-packages "local-project" '(:lpro))
 
-(asdf:defsystem #:gdep
-  :name "gdep"
+(asdf:defsystem #:lpro
+  :name "local-project"
   :description "A command line utilty for managing locally compiled programs"
   :author "Your Name <your.name@example.com>"
   :license  "GPL"
@@ -16,4 +17,4 @@
 				#:local-time
 				#:make-hash
 				#:iterate #:cl-ppcre  ; #:closer-mop
-				#:alexandria #:gdep/all))
+				#:alexandria #:lpro/all))

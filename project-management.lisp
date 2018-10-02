@@ -1,19 +1,19 @@
-(defpackage #:gdep/project-management
-  (:use :cl :gdep/project :gdep/dependency
-	:gdep/database)
-  (:import-from :gdep/util
+(defpackage #:lpro/project-management
+  (:use :cl :lpro/project :lpro/dependency
+	:lpro/database)
+  (:import-from :lpro/util
 		:print-error
 		:run-menu)
-  (:import-from :gdep/build-types
+  (:import-from :lpro/build-types
 		:get-build-types)
-  (:import-from :gdep/version-control
+  (:import-from :lpro/version-control
 		:get-version-control-types)
-  (:import-from :gdep/command
+  (:import-from :lpro/command
 		:defcommand)
   (:import-from :alexandria
 		:if-let))
 
-(in-package #:gdep/project-management)
+(in-package #:lpro/project-management)
 
 (export '(init-project
 	  edit-project))
@@ -51,7 +51,7 @@
 (defun edit-project-interactively (project)
   (let ((version-control-types (get-version-control-types))
 	(build-types (get-build-types)))
-    (gdep/util:run-menu (:repeat-prompt t :always-show-help t :num-options-shown 0)
+    (lpro/util:run-menu (:repeat-prompt t :always-show-help t :num-options-shown 0)
 	"Enter a number to change an option, or (y) to continue"
       ("y" "Continue. Everything is correct."
 	   (return-from run-menu))
@@ -97,7 +97,7 @@
 and change the values once everything is entered.~%")
     (setf project-name (query-name))
     (query-variable build-type "Build tool?" build-types)
-    (query-variable compilation-location "In source build?" gdep/project-properties:*compilation-location-members*)
+    (query-variable compilation-location "In source build?" lpro/project-properties:*compilation-location-members*)
     (let ((new-project (make-instance 'project
 				      :name project-name
 				      :location project-dir
@@ -117,7 +117,7 @@ and change the values once everything is entered.~%")
 (defcommand init-project (project-location command-line-args)
     ("Create a new project in the current directory"
      :command-used "init"
-     :more-info "Usage: gdep init")
+     :more-info "Usage: lpro init")
   ;; ignore the command line args for now, we can use them if we need them:
   (declare (ignore command-line-args))
   ;; don't waste the user's time: check if we are already in a project:
@@ -132,7 +132,7 @@ and change the values once everything is entered.~%")
 (defcommand edit-project (project-location command-line-args)
     ("Edit the properties of a project"
      :command-used "edit"
-     :more-info "Usage: gdep edit [project-name]")
+     :more-info "Usage: lpro edit [project-name]")
   (if-let (project (get-project (first command-line-args)))
     (progn
       (format t "Updating project ~A" (cl-ansi-text:magenta (first command-line-args)

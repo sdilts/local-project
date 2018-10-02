@@ -1,18 +1,18 @@
-;;(in-package #:gdep/data-dir)
-(defpackage #:gdep/data-init
-  (:use #:cl #:alexandria #:gdep/util)
-  (:import-from #:gdep/command
+;;(in-package #:lpro/data-dir)
+(defpackage #:lpro/data-init
+  (:use #:cl #:alexandria #:lpro/util)
+  (:import-from #:lpro/command
 		#:defcommand)
-  (:import-from #:gdep/settings
+  (:import-from #:lpro/settings
 		:*data-directory*)
   (:import-from #:lambdalite
 		:load-db)
-  (:import-from #:gdep/build-types
+  (:import-from #:lpro/build-types
 		:scan-build-types)
-  (:import-from #:gdep/version-control
+  (:import-from #:lpro/version-control
 		:scan-version-control))
 
-(in-package #:gdep/data-init)
+(in-package #:lpro/data-init)
 
 (export '(data-dir-init))
 
@@ -23,9 +23,9 @@
 (defcommand scan-scripts-cmd (current-directory command-line-args)
     ("Scan the data directory for more scripts."
      :command-used "scan-scripts"
-     :more-info '("Usage: gdep scan-scripts"
+     :more-info '("Usage: lpro scan-scripts"
 		 " See the README in the data directory for more information"
-		  " about gdep scripts."))
+		  " about lpro scripts."))
   (declare (ignore current-directory command-line-args))
   (scan-scripts))
 

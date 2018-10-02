@@ -1,12 +1,12 @@
-(defpackage #:gdep/build-types
+(defpackage #:lpro/build-types
   (:use :cl :lambdalite)
-  (:import-from :gdep/util
+  (:import-from :lpro/util
 		:create-dir
 		:scan-types
 		:directory-dne-error
 		:run-script))
 
-(in-package #:gdep/build-types)
+(in-package #:lpro/build-types)
 
 (export '(get-build-instructions
 	  get-build-types

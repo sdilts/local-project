@@ -1,7 +1,7 @@
-(defpackage #:gdep/dependency
-  (:use :cl :gdep/dependency-protocol))
+(defpackage #:lpro/dependency
+  (:use :cl :lpro/dependency-protocol))
 
-(in-package #:gdep/dependency)
+(in-package #:lpro/dependency)
 
 (export '(dependency
 	  dependency-name

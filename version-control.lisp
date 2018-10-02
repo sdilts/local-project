@@ -1,10 +1,10 @@
-(defpackage #:gdep/version-control
+(defpackage #:lpro/version-control
   (:use :cl :lambdalite)
-  (:import-from :gdep/util
+  (:import-from :lpro/util
 		:scan-types
 		:run-script))
 
-(in-package #:gdep/version-control)
+(in-package #:lpro/version-control)
 
 (export '(scan-version-control
 	  get-version-control-instructions

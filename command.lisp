@@ -1,14 +1,14 @@
-(defpackage :gdep/command
+(defpackage :lpro/command
   (:use :cl :alexandria :iterate))
 
-(in-package :gdep/command)
+(in-package :lpro/command)
 
 (export '(defcommand
 	  get-command-func
 	  print-available-commands
 	  print-info-text))
 
-(defclass gdep-command ()
+(defclass lpro-command ()
   ((info :initarg :info
 	:reader command-info
 	:type 'string
@@ -22,7 +22,7 @@
 	 :reader command-name
 	 :type 'string)))
 
-(defvar *gdep-commands* (make-hash-table :test #'equal))
+(defvar *lpro-commands* (make-hash-table :test #'equal))
 (defvar *longest-command-length* 0)
 
 (defmacro defcommand (name (&rest args) (info &key command-used more-info)
@@ -35,15 +35,15 @@
 	,@decls
 	,@body)
       ,(let ((cmd-name (or command-used (string-downcase (string name)))))
-	 `(add-command (make-instance 'gdep-command
+	 `(add-command (make-instance 'lpro-command
 				      :name ,cmd-name
 				      :command (function ,name)
 				      :info ,info
 				      :more-info ,more-info))))))
 (defun add-command (command)
-  (declare (type gdep-command command))
+  (declare (type lpro-command command))
   (let ((name (command-name command)))
-    (setf (gethash name *gdep-commands*) command)
+    (setf (gethash name *lpro-commands*) command)
     ;; check to see how long the command is for pretty printing:
     (when (> (length name) *longest-command-length*)
       (setf *longest-command-length* (length name))))
@@ -51,7 +51,7 @@
 
 (declaim (inline get-command))
 (defun get-command (command-name)
-  (gethash command-name *gdep-commands*))
+  (gethash command-name *lpro-commands*))
 
 (defun get-command-func (command-name)
   (when-let ((cmd-object (get-command command-name)))
@@ -59,7 +59,7 @@
 
 (defun print-available-commands (&optional (stream *standard-output*))
   (format stream "Available commands:~%")
-  (iter (for (cmd-name command) in-hashtable *gdep-commands*)
+  (iter (for (cmd-name command) in-hashtable *lpro-commands*)
 	(let ((doc (command-info command))
 	      ;; the base indent, plus the length of the ansi color directive if present
 	      (description-indent (if cl-ansi-text:*enabled*

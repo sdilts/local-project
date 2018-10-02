@@ -1,8 +1,8 @@
-(defpackage #:gdep/settings
+(defpackage #:lpro/settings
   (:use :cl))
 
 
-(in-package #:gdep/settings)
+(in-package #:lpro/settings)
 
 (export '(*data-directory*))
 

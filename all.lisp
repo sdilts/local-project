@@ -1,15 +1,15 @@
-;;;; gdep.lisp
+;;;; lpro.lisp
 ;;
 ;;;; Copyright (c) 2018 Stuart Dilts
 
-;; (uiop:define-package #:gdep
-;;     (:use-reexport #:gdep/data-dir))
+;; (uiop:define-package #:lpro
+;;     (:use-reexport #:lpro/data-dir))
 
-(defpackage #:gdep/all
-  (:use :cl #:gdep/data-init #:gdep/project-management
-	#:gdep/update-commands #:gdep/command))
+(defpackage #:lpro/all
+  (:use :cl #:lpro/data-init #:lpro/project-management
+	#:lpro/update-commands #:lpro/command))
 
-;; (in-package #:gdep)
+;; (in-package #:lpro)
 
 
 

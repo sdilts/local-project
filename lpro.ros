@@ -12,23 +12,23 @@ exec ros -Q -- $0 "$@"
 (setf asdf:*central-registry*
       (append (list (merge-pathnames #p"~/Programs/git-install/"))
 	      asdf:*central-registry*))
-(ql:quickload "gdep" :silent t)
+(ql:quickload "lpro" :silent t)
 
-(defpackage :gdep/ros
-  (:use :cl :gdep/all :iterate :gdep/command))
+(defpackage :lpro/ros
+  (:use :cl :lpro/all :iterate :lpro/command))
 
-(in-package :gdep/ros)
+(in-package :lpro/ros)
 
 (defun print-full-help (&optional (stream *standard-output*))
-  (format stream "Welcome to gdep version 0.0.1!~%")
+  (format stream "Welcome to lpro version 0.0.1!~%")
   (format stream "A utiltiy for managing programs locally installed from source.~%")
-  (format stream "~%Usage: gdep [options...] commmand [arguments...]~%~%")
+  (format stream "~%Usage: lpro [options...] commmand [arguments...]~%~%")
   (print-available-commands)
   (format stream "~%")
-  (format stream "Receive more details about a command with~%~6Tgdep help [command]~%~%"))
+  (format stream "Receive more details about a command with~%~6Tlpro help [command]~%~%"))
 
 (defcommand help (location want-info &rest args)
-    ("Print information about the availables commands" :more-info '("Usage: gdep help [command]"
+    ("Print information about the availables commands" :more-info '("Usage: lpro help [command]"
 					 " Get detailed information on how to use [command]"))
   (declare (ignore args location))
   (cond
@@ -58,7 +58,7 @@ exec ros -Q -- $0 "$@"
       (setf cl-ansi-text:*enabled* t)
       (setf cl-ansi-text:*enabled* nil))
   ;; check system install status:
-  (gdep/data-init:data-dir-init)
+  (lpro/data-init:data-dir-init)
   ;; figure out what the user wants:
   (let* ((first (car argv))
 	 (func (get-command-func first)))

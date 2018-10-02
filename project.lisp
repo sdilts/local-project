@@ -1,18 +1,18 @@
-(defpackage #:gdep/project
+(defpackage #:lpro/project
   (:use #:cl
-	#:gdep/dependency-protocol
-	#:gdep/dependency
-	#:gdep/project-properties)
-  (:import-from #:gdep/version-control
+	#:lpro/dependency-protocol
+	#:lpro/dependency
+	#:lpro/project-properties)
+  (:import-from #:lpro/version-control
 		#:run-update
 		#:get-version-control-instructions)
-  (:import-from #:gdep/build-types
+  (:import-from #:lpro/build-types
 		#:get-build-instructions
 		#:run-build
 		#:run-install))
 
 
-(in-package #:gdep/project)
+(in-package #:lpro/project)
 
 (export '(project
 	  build-type
