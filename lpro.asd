@@ -10,6 +10,7 @@
   :author "Your Name <your.name@example.com>"
   :license  "GPL"
   :version "0.0.1"
+  :pathname "src"
   :class :package-inferred-system
   :defsystem-depends-on (:asdf-package-system)
   :depends-on (#:inferior-shell #:cl-store #:uiop #:unix-options

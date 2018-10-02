@@ -1,8 +1,7 @@
 (defpackage #:lpro/project
   (:use #:cl
 	#:lpro/dependency-protocol
-	#:lpro/dependency
-	#:lpro/project-properties)
+	#:lpro/dependency)
   (:import-from #:lpro/version-control
 		#:run-update
 		#:get-version-control-instructions)
