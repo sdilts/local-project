@@ -97,7 +97,7 @@
 and change the values once everything is entered.~%")
     (setf project-name (query-name))
     (query-variable build-type "Build tool?" build-types)
-    (query-variable compilation-location "In source build?" lpro/project-properties:*compilation-location-members*)
+    (query-variable compilation-location "In source build?" '(:in-source :out-of-source))
     (let ((new-project (make-instance 'project
 				      :name project-name
 				      :location project-dir
