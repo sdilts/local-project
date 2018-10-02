@@ -1,0 +1,62 @@
+#+TITLE: Local-Project - A tool for managing programs installed from source
+
+Local-project automates updating and installing projects from source. Local-project can
+take care of pulling updates from a remote source, compiling the
+project, and then installing it. All you need to do is specify the
+project location, version control system, build tool, build location,
+and installation method. Local-project works by calling external programs that
+know how perform each step, so it is easy to add compatability for new
+tools.
+
+Local-project is still in beta, although the interfaces are unlikely to
+change. The main planned feature is tracking the dependencies of
+projects to know if need to be re-compiled.
+
+* Installation
+** Dependencies
+  Lpro has the following runtime dependencies:
+  + A UNIX-like system. Lpro has been tested on various Linux
+    distributions and FreeBSD.
+  + [[https://github.com/roswell/roswell][Roswell]].
+  + A Bash shell. The scripts that gdep uses to perform its various
+    functions are written in Bash.
+** Installation
+   #+BEGIN_SRC bash
+     git clone https://github.com/sdilts/gdep.git
+     cd gdep
+     ./configure
+     make
+     sudo make install
+   #+END_SRC
+   You can uninstall local-project with =make uninstall=.
+* Usage
+  First, make sure that the necessary configure scripts have been run
+  in the project. Then, navigate to the root directory of a project
+  and enter the command
+  #+BEGIN_SRC bash
+  lpro init
+  #+END_SRC
+  =Lpro= will then ask you questions about how the project is built and
+  installed. Here are some highlights:
+  + Project name :: The name that the project is referenced as. Must
+    be unique.
+  + In source build :: Are the build and install commands issued in
+    the project's root directory or in a =build= directory in the
+    project's root folder?
+  + Root Installation Required :: Some projects are installed locally without
+       needing root access. It is possible to install
+       these projects separately from the rest of the
+       projects. Specify =no= to this option for this projet to be
+       installed separately. See =gdep help install= for more information.
+  When you are finished, you can now run
+  #+BEGIN_SRC bash
+  lpro update $PROJECT_NAME
+  #+END_SRC
+  to pull from remote and compile the project, or
+  #+BEGIN_SRC bash
+  lpro update-all
+  #+END_SRC
+  to do the same for all of the projets local-project knows about.
+
+  To install projects, use the =lpro install= or =lpro install-all=
+  commands.
