@@ -137,7 +137,6 @@ and change the values once everything is entered.~%")
     (progn
       (format t "Updating project ~A" (cl-ansi-text:magenta (first command-line-args)
 							    :effect :bright))
-      (inspect project)
       (edit-project-interactively project)
       (update-project project)
       (format t (cl-ansi-text:green "Project Updated~%" :effect :bright)))
