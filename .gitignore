@@ -12,3 +12,5 @@ src/settings.lisp
 Makefile
 config.*
 lpro.ros
+lpro
+autom4te.cache/
