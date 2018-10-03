@@ -14,16 +14,16 @@ projects to know if need to be re-compiled.
 
 * Installation
 ** Dependencies
-  Lpro has the following runtime dependencies:
-  + A UNIX-like system. Lpro has been tested on various Linux
+  Local-project  (=lpro=) has the following runtime dependencies:
+  + A UNIX-like system. Local-project has been tested on various Linux
     distributions and FreeBSD.
   + [[https://github.com/roswell/roswell][Roswell]].
-  + A Bash shell. The scripts that gdep uses to perform its various
+  + A Bash shell. The scripts that =lpro= uses to perform its various
     functions are written in Bash.
 ** Installation
    #+BEGIN_SRC bash
-     git clone https://github.com/sdilts/gdep.git
-     cd gdep
+     git clone https://github.com/sdilts/local-project.git
+     cd local-project
      ./configure
      make
      sudo make install
@@ -47,7 +47,7 @@ projects to know if need to be re-compiled.
        needing root access. It is possible to install
        these projects separately from the rest of the
        projects. Specify =no= to this option for this projet to be
-       installed separately. See =gdep help install= for more information.
+       installed separately. See =lpro help install= for more information.
   When you are finished, you can now run
   #+BEGIN_SRC bash
   lpro update $PROJECT_NAME
@@ -60,7 +60,7 @@ projects to know if need to be re-compiled.
 
   To install projects, use the =lpro install= or =lpro install-all=
   commands. If sudo access is required, note that =/usr/local/bin=,
-  the location that the =lpro= binary is installed, is not usually in
+  the default location that the =lpro= binary is installed, is not usually in
   the =$PATH= used by =sudo= and the root user. Do not add the directory
   to the path, as that [[https://security.stackexchange.com/questions/136990/whats-the-motivation-for-excluing-usr-local-bin-from-roots-path][is a potential security risk]]. Instead, use the full
   binary path.
