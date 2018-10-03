@@ -11,8 +11,8 @@
 (defvar *db-directory* (merge-pathnames (make-pathname :directory '(:relative ".local/share/lpro"))
 				  (make-pathname :directory (uiop:getenv "HOME"))))
 
-(defvar *pkg-database* @PKG_DB@
+(defvar *pkg-database* :@PKG_DB@
   "The system database type")
 
-(defvar *pkg-manager* @PKG_MANAGER@
+(defvar *pkg-manager* :@PKG_MANAGER@
   "The system package manager")

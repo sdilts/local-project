@@ -1677,8 +1677,10 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 PROJECT_ROOT_DIR="`pwd`"
 
 
-# Extract the first word of "ros", so it can be a program name with args.
-set dummy ros; ac_word=$2
+for ac_prog in ros
+do
+  # Extract the first word of "$ac_prog", so it can be a program name with args.
+set dummy $ac_prog; ac_word=$2
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
 $as_echo_n "checking for $ac_word... " >&6; }
 if ${ac_cv_path_ROSWELL+:} false; then :
@@ -1704,7 +1706,6 @@ done
   done
 IFS=$as_save_IFS
 
-  test -z "$ac_cv_path_ROSWELL" && ac_cv_path_ROSWELL="ros"
   ;;
 esac
 fi
@@ -1718,11 +1719,16 @@ $as_echo "no" >&6; }
 fi
 
 
+  test -n "$ROSWELL" && break
+done
+
 
 # Is there a better way to check which management tools are being used?
 # get the package manager used:
-# Extract the first word of "zypper", so it can be a program name with args.
-set dummy zypper; ac_word=$2
+for ac_prog in zypper yum pkg apt-get
+do
+  # Extract the first word of "$ac_prog", so it can be a program name with args.
+set dummy $ac_prog; ac_word=$2
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
 $as_echo_n "checking for $ac_word... " >&6; }
 if ${ac_cv_prog_PKG_MANAGER+:} false; then :
@@ -1738,7 +1744,7 @@ do
   test -z "$as_dir" && as_dir=.
     for ac_exec_ext in '' $ac_executable_extensions; do
   if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_prog_PKG_MANAGER="":zypper""
+    ac_cv_prog_PKG_MANAGER="$ac_prog"
     $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
     break 2
   fi
@@ -1758,130 +1764,19 @@ $as_echo "no" >&6; }
 fi
 
 
-if [ -z "$PKG_MANAGER" ]; then
-  # Extract the first word of "yum", so it can be a program name with args.
-set dummy yum; ac_word=$2
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
-$as_echo_n "checking for $ac_word... " >&6; }
-if ${ac_cv_prog_PKG_MANAGER+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  if test -n "$PKG_MANAGER"; then
-  ac_cv_prog_PKG_MANAGER="$PKG_MANAGER" # Let the user override the test.
-else
-as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-    for ac_exec_ext in '' $ac_executable_extensions; do
-  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_prog_PKG_MANAGER="":yum""
-    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
+  test -n "$PKG_MANAGER" && break
 done
-  done
-IFS=$as_save_IFS
-
-fi
-fi
-PKG_MANAGER=$ac_cv_prog_PKG_MANAGER
-if test -n "$PKG_MANAGER"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $PKG_MANAGER" >&5
-$as_echo "$PKG_MANAGER" >&6; }
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
 
 
-fi
-if [ -z "$PKG_MANAGER" ]; then
-   # Extract the first word of "pkg", so it can be a program name with args.
-set dummy pkg; ac_word=$2
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
-$as_echo_n "checking for $ac_word... " >&6; }
-if ${ac_cv_prog_PKG_MANAGER+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  if test -n "$PKG_MANAGER"; then
-  ac_cv_prog_PKG_MANAGER="$PKG_MANAGER" # Let the user override the test.
-else
-as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-    for ac_exec_ext in '' $ac_executable_extensions; do
-  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_prog_PKG_MANAGER="":pkg""
-    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-  done
-IFS=$as_save_IFS
-
-fi
-fi
-PKG_MANAGER=$ac_cv_prog_PKG_MANAGER
-if test -n "$PKG_MANAGER"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $PKG_MANAGER" >&5
-$as_echo "$PKG_MANAGER" >&6; }
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
-
-
-fi
-if [ -z "$PKG_MANAGER" ]; then
-   # Extract the first word of "apt-get", so it can be a program name with args.
-set dummy apt-get; ac_word=$2
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
-$as_echo_n "checking for $ac_word... " >&6; }
-if ${ac_cv_prog_PKG_MANAGER+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  if test -n "$PKG_MANAGER"; then
-  ac_cv_prog_PKG_MANAGER="$PKG_MANAGER" # Let the user override the test.
-else
-as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-    for ac_exec_ext in '' $ac_executable_extensions; do
-  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_prog_PKG_MANAGER="":apt-get""
-    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-  done
-IFS=$as_save_IFS
-
-fi
-fi
-PKG_MANAGER=$ac_cv_prog_PKG_MANAGER
-if test -n "$PKG_MANAGER"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $PKG_MANAGER" >&5
-$as_echo "$PKG_MANAGER" >&6; }
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
-
-
-fi
 
 # get the package database
 if [ PKG_MANAGER = ":pkg" ]; then
    PKG_DB=":pkg"
 else
-   # Extract the first word of "rpm", so it can be a program name with args.
-set dummy rpm; ac_word=$2
+   for ac_prog in rpm dpkg
+do
+  # Extract the first word of "$ac_prog", so it can be a program name with args.
+set dummy $ac_prog; ac_word=$2
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
 $as_echo_n "checking for $ac_word... " >&6; }
 if ${ac_cv_prog_PKG_DB+:} false; then :
@@ -1897,7 +1792,7 @@ do
   test -z "$as_dir" && as_dir=.
     for ac_exec_ext in '' $ac_executable_extensions; do
   if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_prog_PKG_DB="":rpm""
+    ac_cv_prog_PKG_DB="$ac_prog"
     $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
     break 2
   fi
@@ -1917,45 +1812,9 @@ $as_echo "no" >&6; }
 fi
 
 
-   if [ -z "$PKG_DB" ]; then
-     # Extract the first word of "dpkg", so it can be a program name with args.
-set dummy dpkg; ac_word=$2
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
-$as_echo_n "checking for $ac_word... " >&6; }
-if ${ac_cv_prog_PKG_DB+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  if test -n "$PKG_DB"; then
-  ac_cv_prog_PKG_DB="$PKG_DB" # Let the user override the test.
-else
-as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-    for ac_exec_ext in '' $ac_executable_extensions; do
-  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_prog_PKG_DB="":dpkg""
-    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
+  test -n "$PKG_DB" && break
 done
-  done
-IFS=$as_save_IFS
 
-fi
-fi
-PKG_DB=$ac_cv_prog_PKG_DB
-if test -n "$PKG_DB"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $PKG_DB" >&5
-$as_echo "$PKG_DB" >&6; }
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
-
-
-   fi
 fi
 
 if test "$PKG_MANAGER" = "no"; then
@@ -1966,6 +1825,7 @@ if test "$PKG_DB" = "no"; then
    { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Package databse tool not found. You will not be able to check if a project's package dependencies have been updated." >&5
 $as_echo "$as_me: WARNING: Package databse tool not found. You will not be able to check if a project's package dependencies have been updated." >&2;}
 fi
+
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
