@@ -25,7 +25,9 @@
 	  version-control-type
 	  compilation-error
 	  update-source-error
-	  project-error-project))
+	  project-error-project
+	  project-install
+	  installation-error))
 
 (defclass project (dependency)
   ((location :initarg :location
@@ -74,6 +76,13 @@
 		     (project-error-project condition)
 		     (uiop:subprocess-error-code condition)))))
 
+(define-condition installation-error (project-error uiop:subprocess-error)
+  ()
+  (:report (lambda (condition stream)
+	     (format stream "Error installing project~% ~A.~%Process exited with error code ~A"
+		     (project-error-project condition)
+		     (uiop:subprocess-error-code condition)))))
+
 (defmethod project-update-source ((project project))
   "Updates the source code of the project"
   (handler-case  (run-update (get-version-control-instructions (version-control-type project))
@@ -103,6 +112,16 @@
 		:command (uiop:subprocess-error-command c)
 		:process (uiop:subprocess-error-process c))))))
 
+(defmethod project-install ((project project))
+  (let ((build-instruction (get-build-instructions (build-type project)))
+	(build-location (get-build-location project)))
+    (handler-case (run-install build-instruction build-location)
+      (uiop:subprocess-error (c)
+	(cerror "Ignore compilation error"
+		'installation-error :project project
+		:code (uiop:subprocess-error-code c)
+		:command (uiop:subprocess-error-command c)
+		:process (uiop:subprocess-error-process c))))))
 
 ;; (defmethod print-object ((object project) stream)
 ;;   (print-unreadable-object (object stream :type t)

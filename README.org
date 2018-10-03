@@ -59,4 +59,8 @@ projects to know if need to be re-compiled.
   to do the same for all of the projets local-project knows about.
 
   To install projects, use the =lpro install= or =lpro install-all=
-  commands.
+  commands. If sudo access is required, note that =/usr/local/bin=,
+  the location that the =lpro= binary is installed, is not usually in
+  the =$PATH= used by =sudo= and the root user. Do not add the directory
+  to the path, as that [[https://security.stackexchange.com/questions/136990/whats-the-motivation-for-excluing-usr-local-bin-from-roots-path][is a potential security risk]]. Instead, use the full
+  binary path.

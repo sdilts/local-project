@@ -8,7 +8,9 @@
 		#:project-compile
 		#:compilation-error
 		#:project-error-project
-		#:update-source-error)
+		#:update-source-error
+		#:installation-error
+		#:project-install)
   (:import-from #:lpro/dependency
 		#:dependency-name)
   (:import-from #:lpro/database
@@ -32,13 +34,22 @@
       (format t "~A These projects failed to update their source code:~%"
 	      (cl-ansi-text:red "Error:" :effect :bright))
       (dolist (project update-source-failed)
-	(format t "~4T~A~%" (dependency-name project))))
+	(format t "~4T~A~%" (dependency-name project)))
+      (format t "~%"))
     (when compilation-failed
       (format t "~A These projects failed to compile:~%"
 	      (cl-ansi-text:red "Error:" :effect :bright))
       (dolist (project compilation-failed)
 	(format t "~4T~A~%" (dependency-name project)))
       (format t "~%"))))
+
+(defun print-install-error-summary (install-errors &optional (stream *standard-output*))
+  (when install-errors
+    (format stream "~A These projects failed to install:~%"
+	    (cl-ansi-text:red "Error:" :effect :bright))
+    (dolist (project install-errors)
+      (format stream "~4T~A~%" (dependency-name project)))
+    (format stream "~%")))
 
 (defun update-projects (project-list)
   (let ((compilation-errors ())
@@ -67,7 +78,7 @@
     (when (or compilation-errors
 	    update-source-errors)
       (make-update-errors :compile compilation-errors
-			      :update-source update-source-errors))))
+			  :update-source update-source-errors))))
 
 (defcommand update (current-directory command-line-args)
     ("Download and compile the updated source for the listed projects"
@@ -103,4 +114,56 @@
   (let ((results (update-projects (all-projects))))
     (when results
       (print-error-summary results)
+      (uiop:quit 1))))
+
+(defun install-projects (project-list)
+  (let ((errors ()))
+    (dolist (project project-list)
+      (let ((error-p nil))
+	(handler-case (project-install project)
+	  (installation-error (c)
+	    (setf error-p T)
+	    (format t "~A~A~%" (cl-ansi-text:red "Error: " :effect :bright) c)
+	    (push (project-error-project c) errors)))
+	(if error-p
+	    (format t "~&~A Could not install project~%~%"
+		    (cl-ansi-text:yellow "Error:" :effect :bright))
+	    (format t "~&~A Project installed~%~%"
+		    (cl-ansi-text:green "Success:" :effect :bright)))))
+    errors))
+
+(defcommand install (current-directory command-line-args)
+    ("Install the given projects"
+     :more-info '("Usage: lpro install [projects...]"
+		  " Install the listed projects. Note that sudo may be required."
+		  " Use install-all to install all projects known to lpro."))
+  (when (not command-line-args)
+      (format *debug-io* "~A At least one project name must be given~%~%"
+	      (cl-ansi-text:red "Error:" :effect :bright))
+      (print-info-text "install" *debug-io*)
+      (uiop:quit 22))
+  (let ((not-found ())
+	(projects ()))
+    (dolist (project-name command-line-args)
+      (if-let ((project (get-project project-name)))
+	(push project projects)
+	(push project-name not-found)))
+    (let ((results (install-projects projects)))
+      (when (or not-found results)
+	(when not-found
+	  (format t "~A These projects could not be found:"
+		  (cl-ansi-text:red "Error:" :effect :bright))
+	  (dolist (project not-found)
+	    (format t "~&~4T~A~%" project)))
+	(when results
+	  (format t "~%")
+	  (print-install-error-summary results))
+	(uiop:quit 1)))))
+
+(defcommand install-all (current-directory command-line-args)
+    ("Install all projects known to lpro"
+     :more-info '("Usage: lpro install-all"))
+  (let ((results (install-projects (all-projects))))
+    (when results
+      (print-install-error-summary results)
       (uiop:quit 1))))
