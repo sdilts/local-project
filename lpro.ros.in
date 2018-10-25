@@ -64,7 +64,10 @@ exec ros -Q -- $0 "$@"
 	 (func (get-command-func first)))
     (cond
       ((functionp func)
-       (funcall func *default-pathname-defaults* (cdr argv)))
+       (handler-case (funcall func *default-pathname-defaults* (cdr argv))
+	 (end-of-file ()
+	   (format t "~%Operation Aborted~%")
+	   (finish-output))))
       (t
        (format t (cl-ansi-text:red (format nil "~&Unknown command: ~S~%"
 	       (if (symbolp first)
