@@ -99,7 +99,7 @@ path of the subdirectory and TYPENAME bound to subdirectory name translated into
 (defmacro print-error (stream fmt-string &rest fmt)
   `(progn
      (format ,stream (cl-ansi-text:red "Error: "))
-     (funcall ,stream ,fmt-string ,@fmt)))
+     (format ,stream ,fmt-string ,@fmt)))
 
 
 
