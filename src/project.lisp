@@ -123,13 +123,14 @@
 		:command (uiop:subprocess-error-command c)
 		:process (uiop:subprocess-error-process c))))))
 
-;; (defmethod print-object ((object project) stream)
-;;   (print-unreadable-object (object stream :type t)
-;;     (with-slots (name id location version-control-type build-type compilation-location
-;; 		      url)
-;; 	object
-;;       (format stream "name: ~A id: location: ~A ~A ~A ~A ~A ~A" name id location
-;; 	      version-control-type build-type compilation-location url))))
+
+(defmethod print-object ((object project) stream)
+  (print-unreadable-object (object stream :type t)
+    (with-accessors ((name dependency-name)
+		     (id dependency-id)
+		     (location project-location))
+	object
+      (format stream "name: ~A id: ~A location: ~A" name id location))))
 
 #|
 Project updating order:
