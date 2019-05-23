@@ -83,6 +83,9 @@
 		     (project-error-project condition)
 		     (uiop:subprocess-error-code condition)))))
 
+(defmethod project-update-version ((project project))
+  (setf (dependency-version project) (local-time:timestamp-to-unix (local-time:now))))
+
 (defmethod project-update-source ((project project))
   "Updates the source code of the project"
   (handler-case  (run-update (get-version-control-instructions (version-control-type project))
@@ -123,6 +126,14 @@
 		:command (uiop:subprocess-error-command c)
 		:process (uiop:subprocess-error-process c))))))
 
+(defmethod pretty-print-object ((object project) stream)
+  (with-accessors ((name dependency-name)
+		   (location project-location)
+		   (build-type build-type)
+		   (version-control version-control-type))
+      object
+    (format stream "~&Project: ~A~%location: ~A~%build type: ~A~%version control system: ~A"
+	    name location build-type version-control)))
 
 (defmethod print-object ((object project) stream)
   (print-unreadable-object (object stream :type t)

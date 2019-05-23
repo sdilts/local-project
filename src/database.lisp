@@ -111,7 +111,8 @@
   (with-tx
     (update :dependency-db (where (equal (dependency-id project)
 					 :/dependency-id))
-	    (keyset :/dependency-name (dependency-name project)))
+	    (keyset :/dependency-name (dependency-name project)
+		    :/dependency-version (dependency-version project)))
     (update :project-db (where (equal (dependency-id project)
 				       :/dependency-id))
 	    (keyset :/location (project-location project)

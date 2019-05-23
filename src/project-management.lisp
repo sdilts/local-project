@@ -143,3 +143,16 @@ and change the values once everything is entered.~%")
     (progn
       (print-error t "Project ~A not found" (first command-line-args))
       (uiop:quit 22))))
+
+(defcommand list-info (project-location command-line-args)
+    ("List information about known projects"
+     :command-used "list")
+  (multiple-value-bind (parsed-commands valid-options free-args)
+      (unix-options:getopt command-line-args "ap:" nil)
+    (let ((project-name)
+	  (command-action))
+      (loop :while valid-options
+	   (let ((option (first valid-options)))
+	     (alexandria:switch (option :test #'string=)
+	       ("a" (setf project-name :all))
+	       ("p" (setf project-name (second
