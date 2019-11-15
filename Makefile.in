@@ -19,7 +19,7 @@ clean:
 install: lpro
 	test -z "$(destdir)$(BIN_DIR)" || mkdir -p "$(destdir)$(BIN_DIR)"
 	install -m 755 lpro "$(destdir)$(BIN_DIR)"
-	test -z "$(destdir)$(DATA_ROOT_DIR)" || mkdir -p "$(destdir)$(DATA_ROOT_DIR)"
+	test -z "$(destdir)$(DATA_ROOT_DIR)" || mkdir -p "$(destdir)$(DATA_ROOT_DIR)/lpro"
 	cp -r data/* $(DATA_DIR)
 
 uninstall:
