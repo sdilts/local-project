@@ -4,7 +4,8 @@
 		:create-dir
 		:scan-types
 		:directory-dne-error
-		:run-script))
+		:run-script
+		:create-directory))
 
 (in-package #:lpro/build-types)
 

@@ -11,7 +11,8 @@
 	  directory-dne-error
 	  create-dir
 	  print-error
-	  scan-types))
+	  scan-types
+	  create-directory))
 
 (define-condition directory-already-exists-error (error)
   ((location :initarg :location :reader location))
@@ -100,8 +101,6 @@ path of the subdirectory and TYPENAME bound to subdirectory name translated into
   `(progn
      (format ,stream (cl-ansi-text:red "Error: "))
      (format ,stream ,fmt-string ,@fmt)))
-
-
 
 (defun build-help-text (forms)
   `(progn
