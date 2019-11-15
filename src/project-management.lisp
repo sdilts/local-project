@@ -9,7 +9,8 @@
   (:import-from :lpro/version-control
 		:get-version-control-types)
   (:import-from :lpro/command
-		:defcommand)
+		:defcommand
+		:print-info-text)
   (:import-from :alexandria
 		:if-let))
 
@@ -144,15 +145,46 @@ and change the values once everything is entered.~%")
       (print-error t "Project ~A not found" (first command-line-args))
       (uiop:quit 22))))
 
+(defun list-build-types (print-category)
+  (when print-category
+    (format t "~&~A" (cl-ansi-text:blue "Build types:" :effect :bright)))
+  (let ((build-types (get-build-types)))
+    (dolist (b build-types)
+      (format *standard-output* "~&~4T~A~%" b))))
+
+(defun list-version-control (print-category)
+  (when print-category
+    (format t "~&~A" (cl-ansi-text:blue "Version control types:" :effect :bright)))
+  (let ((version-controls (get-version-control-types)))
+    (dolist (c version-controls)
+      (format *standard-output* "~&~4T~A~%" c))))
+
+(defun list-projects (print-category)
+  (when print-category
+    (format t "~&~A" (cl-ansi-text:blue "Projects:" :effect :bright)))
+  (let ((projects (all-projects)))
+    (dolist (proj projects)
+      (format *standard-output* "~&~4T~A~%" (dependency-name proj)))))
+
+
 (defcommand list-info (project-location command-line-args)
     ("List information about known projects"
-     :command-used "list")
-  (multiple-value-bind (parsed-commands valid-options free-args)
-      (unix-options:getopt command-line-args "ap:" nil)
-    (let ((project-name)
-	  (command-action))
-      (loop :while valid-options
-	   (let ((option (first valid-options)))
-	     (alexandria:switch (option :test #'string=)
-	       ("a" (setf project-name :all))
-	       ("p" (setf project-name (second
+     :command-used "list"
+     :more-info `("Usage: lpro list [options]"
+		  " Options:"
+		  "   -p List projects"
+		  "   -c List version control types"
+		  "   -b List build scripts"))
+  (declare (ignore project-location))
+    (multiple-value-bind (parsed-commands valid-options free-args)
+	(unix-options:getopt command-line-args "pcb" nil)
+      (declare (ignore parsed-commands free-args))
+      (let ((print-category-p (cdr valid-options)))
+	(when (not valid-options)
+	  (print-info-text "list" *error-output*)
+	  (uiop:quit 22))
+	(dolist (option valid-options)
+	  (alexandria:switch (option :test #'string=)
+	    ("b" (list-build-types print-category-p))
+	    ("c" (list-version-control print-category-p))
+	    ("p" (list-projects print-category-p)))))))
