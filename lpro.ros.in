@@ -10,7 +10,8 @@ exec ros -Q -- $0 "$@"
    (:directory #p"@PROJECT_ROOT_DIR@")
    :inherit-configuration))
 (setf asdf:*central-registry*
-      (append (list (merge-pathnames #p"@PROJECT_ROOT_DIR@/src/"))
+      (append (list (merge-pathnames #p"@PROJECT_ROOT_DIR@/src/")
+		    (merge-pathnames #p"@PROJECT_ROOT_DIR@/"))
 	      asdf:*central-registry*))
 (ql:quickload "lpro" :silent t)
 
